@@ -29,7 +29,7 @@
 - Сведения о настройке коммутации внесите в отчёт.
 
 ## Выполнение:
-**Настройка hostname**
+### Настройка hostname.
 ### ISP
 ```bash
 hostnamectl set-hostname isp.au-team.irpo; exec bash
