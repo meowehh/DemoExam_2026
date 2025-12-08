@@ -22,6 +22,8 @@
 - **Сети:** Настройка подсетей согласно RFC1918
 
 ### Системное администрирование  
-- **Сервисы:** Samba AD, NFS, Chrony, Ansible
-- **Контейнеризация:** Docker + кастомное веб-приложение
-- **Веб-сервисы:** Apache + PHP/MariaDB, Nginx reverse proxy с аутентификацией
+- **Сервисы:** Samba AD, NFS, Chrony(NTP-сервер на ISP), Ansible
+- **Файловые службы**: NFS-сервер, RAID 0 (mdadm)
+- **Автоматизация**: Ansible (инвентаризация и управление)
+- **Контейнеризация:** Docker + Docker Compose (стек testapp + MariaDB)
+- **Веб-сервисы:** Apache + PHP/MariaDB, Nginx reverse proxy с Basic-аутентификацией (.htpasswd)
