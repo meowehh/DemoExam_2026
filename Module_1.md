@@ -32,3 +32,64 @@
 - Настройте часовой пояс на всех устройствах (за исключением виртуального коммутатора, в случае его использования) согласно месту проведения экзамена.
 
 ## Выполнение:
+
+## Выполнение:
+### Настройка hostname и часового пояса.
+### ISP
+```bash
+hostnamectl set-hostname isp.au-team.irpo; exec bash
+
+apt-get update && apt-get install tzdata -y
+
+timedatectl set-timezone Asia/Novosibirsk
+```
+**Выполним проверку**:
+```bash
+timedatectl
+```
+```bash
+               Local time: Thu 2025-12-04 03:27:44 +07
+           Universal time: Wed 2025-12-03 20:27:44 UTC
+                 RTC time: Wed 2025-12-03 20:27:44
+                Time zone: Asia/Novosibirsk (+07, +0700)
+System clock synchronized: yes
+              NTP service: active
+          RTC in local TZ: no
+```
+### HQ-RTR
+```bash
+hostnamectl set-hostname hq-rtr.au-team.irpo; exec bash
+apt-get update && apt-get install tzdata -y
+timedatectl set-timezone Asia/Novosibirsk
+```
+### HQ-SRV
+```bash
+hostnamectl set-hostname hq-srv.au-team.irpo; exec bash
+timedatectl set-timezone Asia/Novosibirsk
+```
+### HQ-CLI
+```bash
+hostnamectl set-hostname hq-cli.au-team.irpo; exec bash
+timedatectl set-timezone Asia/Novosibirsk
+```
+### BR-RTR
+```bash
+hostnamectl set-hostname br-rtr.au-team.irpo; exec bash
+apt-get update && apt-get install tzdata -y
+timedatectl set-timezone Asia/Novosibirsk
+```
+### BR-SRV
+```bash
+hostnamectl set-hostname br-srv.au-team.irpo; exec bash
+timedatectl set-timezone Asia/Novosibirsk
+```
+
+> ⚠️ 💡 **Важно**: Хоть в задании не указано дать название ISP, но для корректного функционирования DNS и других сервисов требуется выдать полное доменное имя всем устройствам.
+
+>⚠️ **Примечание**: Команда hostnamectl set-hostname применяет изменения немедленно без перезагрузки. Флаг ; exec bash обновляет текущую сессию shell для отображения нового hostname в приглашении командной строки.
+
+### 1.2 Конфигурация IPv4 адресов.
+
+### ISP
+```bash
+```
