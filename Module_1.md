@@ -577,12 +577,14 @@ systemctl status sshd
 ```
 Должен быть такой вывод у команды:
 ```bash
+
 ```
 ```bash
-ssh sshuser@localhost -p 3015
+ssh sshuser@localhost -p 2026
 ```
 Должен быть такой вывод у команды:
 ```bash
+
 ```
 
 ### HQ-SRV
@@ -608,13 +610,36 @@ systemctl status sshd
 ```
 Должен быть такой вывод у команды:
 ```bash
+● sshd.service - OpenSSH server daemon
+     Loaded: loaded (/lib/systemd/system/sshd.service; enabled; vendor preset: enabled)
+     Active: active (running) since Tue 2025-12-09 23:25:42 +07; 1s ago
+    Process: 3252 ExecStartPre=/usr/bin/ssh-keygen -A (code=exited, status=0/SUCCESS)
+    Process: 3254 ExecStartPre=/usr/sbin/sshd -t (code=exited, status=0/SUCCESS)
+   Main PID: 3255 (sshd)
+      Tasks: 1 (limit: 1131)
+     Memory: 744.0K
+        CPU: 6ms
+     CGroup: /system.slice/sshd.service
+             └─ 3255 /usr/sbin/sshd -D
 
+Dec 09 23:25:42 hq-srv.au-team.irpo systemd[1]: Starting OpenSSH server daemon...
+Dec 09 23:25:42 hq-srv.au-team.irpo systemd[1]: Started OpenSSH server daemon.
+Dec 09 23:25:42 hq-srv.au-team.irpo sshd[3255]: Server listening on 0.0.0.0 port 2026.
+Dec 09 23:25:42 hq-srv.au-team.irpo sshd[3255]: Server listening on :: port 2026.
 ```
 ```bash
-ssh sshuser@localhost -p 3015
+ssh sshuser@localhost -p 2026
 ```
 Должен быть такой вывод у команды:
 ```bash
+The authenticity of host '[localhost]:2026 ([127.0.0.1]:2026)' can't be established.
+ED25519 key fingerprint is SHA256:ozykrFl1QDnyY+S2wnNx+ZVlUyxY3ct74Bj4RVkmNnI.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '[localhost]:2026' (ED25519) to the list of known hosts.
+«Authorized access only»
 
+sshuser@localhost's password: 
+Last login: Tue Dec  9 23:03:21 2025
+[sshuser@hq-srv ~]$ 
 ```
 >⚠️ 💡 Примечание: В файле баннера /etc/openssh/sshd_banner, нужно поставить 1-2 отступа вниз чтобы баннер корректно отображался, в завимости от редактора vim/nano. Иначе баннер будет наезжать на поле авторизации или на строку приглашения.
