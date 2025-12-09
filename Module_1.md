@@ -675,35 +675,54 @@ Last login: Tue Dec  9 23:03:21 2025
 ### HQ-RTR
 ```bash
 mkdir /etc/net/ifaces/gre1
+```
+```bash
 vim /etc/net/ifaces/gre1/options
 TYPE=iptun
 TUNTYPE=gre
 TUNLOCAL=172.16.1.2
 TUNREMOTE=172.16.2.2
 TUNOPTIONS='ttl 64'
+```
+```bash
 vim /etc/net/ifaces/gre1/ipv4address
 10.10.0.1/30
-
+```
+```bash
 systemctl restart network
 ip -c -br a
 ```
 Если все сделано верно получаем следующий вывод:
 ```bash
-
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp7s1           UP             172.16.1.2/28 fe80::be24:11ff:feda:daba/64 
+enp7s2           UP             fe80::be24:11ff:feae:ad50/64 
+enp7s2.100@enp7s2 UP             192.168.100.1/27 fe80::be24:11ff:feae:ad50/64 
+enp7s2.200@enp7s2 UP             192.168.200.65/28 fe80::be24:11ff:feae:ad50/64 
+enp7s2.999@enp7s2 UP             192.168.99.89/29 fe80::be24:11ff:feae:ad50/64 
+gre0@NONE        DOWN           
+gretap0@NONE     DOWN           
+erspan0@NONE     DOWN           
+gre1@NONE        UNKNOWN        10.10.0.1/30 fe80::ac10:102/64 
 ```
 
 ### BR-RTR
 ```bash
 mkdir /etc/net/ifaces/gre1
+```
+```bash
 vim /etc/net/ifaces/gre1/options
 TYPE=iptun
 TUNTYPE=gre
 TUNLOCAL=172.16.2.2
 TUNREMOTE=172.16.1.2
 TUNOPTIONS='ttl 64'
+```
+```bash
 vim /etc/net/ifaces/gre1/ipv4address
 10.10.0.2/30
-
+```
+```bash
 systemctl restart network
 ip -c -br a
 ```
