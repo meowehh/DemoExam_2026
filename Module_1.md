@@ -341,6 +341,31 @@ iptables -t nat -L -n -v
 ```
 Должны быть такие выводы у команд:
 ```bash
+● iptables.service - IPv4 firewall with iptables
+     Loaded: loaded (/lib/systemd/system/iptables.service; enabled; vendor preset: disabled)
+     Active: active (exited) since Tue 2025-12-09 11:07:03 +07; 5s ago
+    Process: 8199 ExecStart=/etc/init.d/iptables start (code=exited, status=0/SUCCESS)
+   Main PID: 8199 (code=exited, status=0/SUCCESS)
+        CPU: 11ms
+
+Dec 09 11:07:03 isp.au-team.irpo systemd[1]: Starting IPv4 firewall with iptables...
+Dec 09 11:07:03 isp.au-team.irpo iptables[8213]: Applying iptables firewall rules: succeeded
+Dec 09 11:07:03 isp.au-team.irpo iptables[8199]: Applying iptables firewall rules: [ DONE ]
+Dec 09 11:07:03 isp.au-team.irpo systemd[1]: Finished IPv4 firewall with iptables.
+
+Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 MASQUERADE  all  --  *      enp7s1  172.16.1.0/28        0.0.0.0/0           
+    0     0 MASQUERADE  all  --  *      enp7s1  172.16.2.0/28        0.0.0.0/0 
 ```
 > ⚠️ 💡 **Примечание!**: Сразу же настроим интернет на всех устройствах, для этого потребуется повтороить настройку на всех устройствах, детали приведены ниже.
 
