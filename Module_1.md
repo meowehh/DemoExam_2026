@@ -484,13 +484,13 @@ Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
 **На данных устройствах необходимо предварительно установить пакет tzdata для некоторых регионов которых нет по умолчанию на Alt JeOS, в 2026 году это ISP, HQ-RTR, BR-RTR. Если для экзамена использовались машины из скрипта PavelAF.**
 ```bash
 apt-get update && apt-get install tzdata -y
-timedatectl set-timezone Asia/novosibirsk
+timedatectl set-timezone Asia/Novosibirsk
 timedatectl # Проверка 
 ```
 ### HQ-SRV, HQ-CLI, BR-SRV
 **На данных устройствах можно сразу установить часовой пояс, так как тут используется Alt Server и Alt Workstation, где уже есть пакет tzdata.**
 ```bash
-timedatectl set-timezone Asia/novosibirsk
+timedatectl set-timezone Asia/Novosibirsk
 timedatectl # Проверка 
 ```
 
