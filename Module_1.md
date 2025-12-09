@@ -398,6 +398,32 @@ iptables -t nat -L -n -v
 ```
 Должны быть такие выводы у команд:
 ```bash
+● iptables.service - IPv4 firewall with iptables
+     Loaded: loaded (/lib/systemd/system/iptables.service; enabled; vendor preset: disabled)
+     Active: active (exited) since Tue 2025-12-09 04:10:30 UTC; 4s ago
+    Process: 8484 ExecStart=/etc/init.d/iptables start (code=exited, status=0/SUCCESS)
+   Main PID: 8484 (code=exited, status=0/SUCCESS)
+        CPU: 11ms
+
+Dec 09 04:10:30 hq-rtr.au-team.irpo systemd[1]: Starting IPv4 firewall with iptables...
+Dec 09 04:10:30 hq-rtr.au-team.irpo iptables[8498]: Applying iptables firewall rules: succeeded
+Dec 09 04:10:30 hq-rtr.au-team.irpo iptables[8484]: Applying iptables firewall rules: [ DONE ]
+Dec 09 04:10:30 hq-rtr.au-team.irpo systemd[1]: Finished IPv4 firewall with iptables.
+
+Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 MASQUERADE  all  --  *      enp7s1  192.168.100.0/27     0.0.0.0/0           
+    0     0 MASQUERADE  all  --  *      enp7s1  192.168.200.64/28    0.0.0.0/0           
+    0     0 MASQUERADE  all  --  *      enp7s1  192.168.99.88/29     0.0.0.0/0
 ```
 ### BR-RTR
 ```bash
