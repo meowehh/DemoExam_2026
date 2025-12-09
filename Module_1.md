@@ -577,14 +577,37 @@ systemctl status sshd
 ```
 Должен быть такой вывод у команды:
 ```bash
+● sshd.service - OpenSSH server daemon
+     Loaded: loaded (/lib/systemd/system/sshd.service; enabled; vendor preset: enabled)
+     Active: active (running) since Tue 2025-12-09 23:32:23 +07; 4s ago
+    Process: 3075 ExecStartPre=/usr/bin/ssh-keygen -A (code=exited, status=0/SUCCESS)
+    Process: 3077 ExecStartPre=/usr/sbin/sshd -t (code=exited, status=0/SUCCESS)
+   Main PID: 3078 (sshd)
+      Tasks: 1 (limit: 1131)
+     Memory: 748.0K
+        CPU: 6ms
+     CGroup: /system.slice/sshd.service
+             └─ 3078 /usr/sbin/sshd -D
 
+Dec 09 23:32:23 br-srv.au-team.irpo systemd[1]: Starting OpenSSH server daemon...
+Dec 09 23:32:23 br-srv.au-team.irpo sshd[3078]: Server listening on 0.0.0.0 port 2026.
+Dec 09 23:32:23 br-srv.au-team.irpo systemd[1]: Started OpenSSH server daemon.
+Dec 09 23:32:23 br-srv.au-team.irpo sshd[3078]: Server listening on :: port 2026.
 ```
 ```bash
 ssh sshuser@localhost -p 2026
 ```
 Должен быть такой вывод у команды:
 ```bash
+The authenticity of host '[localhost]:2026 ([127.0.0.1]:2026)' can't be established.
+ED25519 key fingerprint is SHA256:I5hoQPp6etwA1OX7wCOKfAFLhiJ8U848g4KUIWRnjyY.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '[localhost]:2026' (ED25519) to the list of known hosts.
+«Authorized access only»
 
+sshuser@localhost's password: 
+Last login: Tue Dec  9 23:04:42 2025
+[sshuser@br-srv ~]$ 
 ```
 
 ### HQ-SRV
