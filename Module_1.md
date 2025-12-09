@@ -450,6 +450,30 @@ iptables -t nat -L -n -v
 ```
 Должны быть такие выводы у команд:
 ```bash
+● iptables.service - IPv4 firewall with iptables
+     Loaded: loaded (/lib/systemd/system/iptables.service; enabled; vendor preset: disabled)
+     Active: active (exited) since Tue 2025-12-09 04:12:17 UTC; 5s ago
+    Process: 7872 ExecStart=/etc/init.d/iptables start (code=exited, status=0/SUCCESS)
+   Main PID: 7872 (code=exited, status=0/SUCCESS)
+        CPU: 11ms
+
+Dec 09 04:12:17 br-rtr.au-team.irpo systemd[1]: Starting IPv4 firewall with iptables...
+Dec 09 04:12:17 br-rtr.au-team.irpo iptables[7887]: Applying iptables firewall rules: succeeded
+Dec 09 04:12:17 br-rtr.au-team.irpo iptables[7872]: Applying iptables firewall rules: [ DONE ]
+Dec 09 04:12:17 br-rtr.au-team.irpo systemd[1]: Finished IPv4 firewall with iptables.
+
+Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 MASQUERADE  all  --  *      enp7s1  192.168.3.0/28       0.0.0.0/0 
 ```
 
 >⚠️ **Важно**: На данном этапе уже должен работать выход в Интернет на всех устройствах (кроме HQ-CLI, его настроим позже по DHCP), а также пинг между ними. Если что-то не работает, значит где-то ошибка.
