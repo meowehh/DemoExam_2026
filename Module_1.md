@@ -86,6 +86,7 @@ systemctl restart network
 ```bash
 ip -c -br a
 ```
+**Должен быть такой вывод у команды:**
 ```bash
 lo               UNKNOWN        127.0.0.1/8 ::1/128 
 enp7s1           UP             192.168.120.157/24 fe80::be24:11ff:fe74:fa7/64 
@@ -162,6 +163,7 @@ systemctl restart network
 ```bash
 ip -c -br a
 ```
+**Должен быть такой вывод у команды:**
 ```bash
 lo               UNKNOWN        127.0.0.1/8 ::1/128 
 enp7s1           UP             172.16.1.2/28 fe80::be24:11ff:feda:daba/64 
@@ -171,3 +173,45 @@ enp7s2.200@enp7s2 UP             192.168.200.65/28 fe80::be24:11ff:feae:ad50/64
 enp7s2.999@enp7s2 UP             192.168.99.89/29 fe80::be24:11ff:feae:ad50/64
 ```
 > ⚠️ 💡 Важно!: Так как VLAN созданы через network внутри Proxmox, обязательно идем в веб панель Proxmox VE, заходим в раздел Server View > Datacenter > pve. В этом разделе в открытом списке выбираем 10103, 10104 машины (HQ-SRV,HQ-CLI), заходим в настройки во вкладку Hardware, меняем в графе Network Device (net6) VLAN tag, с того который там указан на 100 для HQ-CLI, и на 200 для HQ-SRV. Перезапускать машины не нужно.
+
+### HQ-SRV:
+⚠️ 💡 Для enp7s1 (/etc/net/ifaces/enp7s1/options) в HQ-RTR, нужно заменить:
+```bash
+vim /etc/net/ifaces/enp7s1/options 
+BOOTPROTO=dhcp
+TYPE=eth
+CONFIG_WIRELESS=no
+SYSTEMD_BOOTPROTO=dhcp4
+CONFIG_IPV4=yes
+DISABLED=no
+NM_CONTROLLED=no
+SYSTEMD_CONTROLLED=no
+```
+На те параметры что указаны ниже:
+```bash
+BOOTPROTO=static
+TYPE=eth
+```
+```bash
+vim /etc/net/ifaces/enp7s1/ipv4address
+192.168.100.2/27
+```
+```bash
+vim /etc/net/ifaces/enp7s1/ipv4route
+default via 192.168.100.1
+```
+```bash
+vim /etc/net/ifaces/enp7s1/resolv.conf
+nameserver 9.9.9.9
+```
+```bash
+systemctl restart network
+```
+```bash
+ip -c -br a
+```
+**Должен быть такой вывод у команды:**
+```bash
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp7s1           UP             192.168.100.2/27 fe80::be24:11ff:fef0:121/64 
+```
