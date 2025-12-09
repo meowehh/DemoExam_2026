@@ -63,4 +63,32 @@ hostnamectl set-hostname br-srv.au-team.irpo; exec bash
 
 ### ISP
 ```bash
+mkdir /etc/net/ifaces/enp7s2
+mkdir /etc/net/ifaces/enp7s3
+```
+```bash
+vim /etc/net/ifaces/enp7s2/options
+BOOTPROTO=static
+TYPE=eth
+vim /etc/net/ifaces/enp7s2/ipv4address
+172.16.1.1/28
+```
+```bash
+vim /etc/net/ifaces/enp7s3/options
+BOOTPROTO=static
+TYPE=eth
+vim /etc/net/ifaces/enp7s3/ipv4address
+172.16.2.1/28
+```
+```bash
+systemctl restart network
+```
+```bash
+ip -c -br a
+```
+```bash
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp7s1           UP             192.168.120.157/24 fe80::be24:11ff:fe74:fa7/64 
+enp7s2           UP             172.16.1.1/28 fe80::be24:11ff:fed1:a8dc/64 
+enp7s3           UP             172.16.2.1/28 fe80::be24:11ff:fed6:e399/64
 ```
