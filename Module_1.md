@@ -511,7 +511,7 @@ timedatectl # Проверка
 ### HQ-SRV и BR-SRV
 ```bash
 useradd sshuser -u 2026 -U
-passwd sshuser
+passwd sshuser # P@ssw0rd
 usermod -a -G wheel sshuser
 
 vim /etc/sudoers
@@ -521,6 +521,8 @@ sshuser ALL=(ALL) NOPASSWD: ALL
 ```
 Из под нового пользователя sshuser должен быть доступ без пароля:
 ```bash
+exit
+net_admin # P@ssw0rd
 sudo cat /root/.bashrc
 ```
 
@@ -530,7 +532,7 @@ apt-get update && apt-get install sudo -y
 ```
 ```bash
 useradd net_admin
-passwd net_admin
+passwd net_admin # P@ssw0rd
 usermod -a -G wheel net_admin
 
 vim /etc/sudoers
@@ -540,11 +542,10 @@ net_admin ALL=(ALL) NOPASSWD: ALL
 ```
 Из под нового пользователя net_admin должен быть доступ без пароля:
 ```bash
+exit
+net_admin # P@ssw0rd
 sudo cat /root/.bashrc
 ```
-
->⚠️ Важно: После редактирования файла /etc/sudoers рекомендуется выполнить проверку синтаксиса командой visudo -c. Для применения изменений перезагрузка системы не требуется. В случае ошибок в /etc/sudoers.d/99-sudopw - игнорируем, главное чтобы не было ошибок в /etc/sudoers, ответ парсинга - OK.
-
 
 ## 📋 Задание 5: Настройте безопасный удаленный доступ на серверах HQ-SRV и BR-SRV.
 
