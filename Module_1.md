@@ -316,4 +316,89 @@ enp7s1           UP             192.168.3.2/28 fe80::be24:11ff:fed0:f63a/64
 
 ### ISP
 ```bash
+vim /etc/net/sysctl.conf
+net.ipv4.ip_forward = 1
+
+sysctl -p
+systemctl restart network
 ```
+```bash
+apt-get update && apt-get install iptables -y
+
+iptables -t nat -A POSTROUTING -o enp7s1 -s 172.16.1.0/28 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o enp7s1 -s 172.16.2.0/28 -j MASQUERADE
+
+iptables -A FORWARD -i ens19 -o enp7s1 -s 172.16.1.0/28 -j ACCEPT
+iptables -A FORWARD -i ens20 -o enp7s1 -s 172.16.2.0/28 -j ACCEPT
+
+iptables-save > /etc/sysconfig/iptables
+systemctl enable iptables --now
+systemctl restart iptables
+```
+```bash
+systemctl status iptables
+iptables -t nat -L -n -v
+```
+Должны быть такие выводы у команд:
+```bash
+```
+> ⚠️ 💡 **Примечание!**: Сразу же настроим интернет на всех устройствах, для этого потребуется повтороить настройку на всех устройствах, детали приведены ниже.
+
+### HQ-RTR
+```bash
+vim /etc/net/sysctl.conf
+net.ipv4.ip_forward = 1
+
+sysctl -p
+systemctl restart network
+```
+```bash
+apt-get update && apt-get install iptables -y
+
+iptables -t nat -A POSTROUTING -o enp7s1 -s 192.168.100.0/27 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o enp7s1 -s 192.168.200.64/28 -j MASQUERADE
+iptables -t nat -A POSTROUTING -o enp7s1 -s 192.168.99.88/29 -j MASQUERADE
+
+iptables -A FORWARD -i ens19.10 -o enp7s1 -s 192.168.100.0/27 -j ACCEPT
+iptables -A FORWARD -i ens19.20 -o enp7s1 -s 192.168.200.64/28 -j ACCEPT
+iptables -A FORWARD -i ens19.99 -o enp7s1 -s 192.168.99.88/29 -j ACCEPT
+
+iptables-save > /etc/sysconfig/iptables
+systemctl enable iptables --now
+systemctl restart iptables
+```
+```bash
+systemctl status iptables
+iptables -t nat -L -n -v
+```
+Должны быть такие выводы у команд:
+```bash
+```
+### BR-RTR
+```bash
+vim /etc/net/sysctl.conf
+net.ipv4.ip_forward = 1
+
+sysctl -p
+systemctl restart network
+```
+```bash
+apt-get update && apt-get install iptables -y
+
+iptables -t nat -A POSTROUTING -o enp7s1 -s 192.168.3.0/28 -j MASQUERADE
+iptables -A FORWARD -i ens19 -o enp7s1 -s 192.168.3.0/28 -j ACCEPT
+
+iptables-save > /etc/sysconfig/iptables
+
+systemctl enable iptables --now
+systemctl restart iptables
+```
+```bash
+systemctl status iptables
+iptables -t nat -L -n -v
+```
+Должны быть такие выводы у команд:
+```bash
+```
+
+>⚠️ **Важно**: На данном этапе уже должен работать выход в Интернет на всех устройствах (кроме HQ-CLI, его настроим позже по DHCP), а также пинг между ними. Если что-то не работает, значит где-то ошибка.
