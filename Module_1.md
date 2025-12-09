@@ -92,3 +92,79 @@ enp7s1           UP             192.168.120.157/24 fe80::be24:11ff:fe74:fa7/64
 enp7s2           UP             172.16.1.1/28 fe80::be24:11ff:fed1:a8dc/64 
 enp7s3           UP             172.16.2.1/28 fe80::be24:11ff:fed6:e399/64
 ```
+### HQ-RTR
+```bash
+mkdir /etc/net/ifaces/enp7s2
+mkdir /etc/net/ifaces/enp7s2.100
+mkdir /etc/net/ifaces/enp7s2.200
+mkdir /etc/net/ifaces/enp7s2.999
+```
+```bash
+vim /etc/net/ifaces/enp7s1/options
+BOOTPROTO=static
+TYPE=eth
+```
+```bash
+vim /etc/net/ifaces/enp7s1/ipv4address
+172.16.1.2/28
+```
+```bash
+vim /etc/net/ifaces/enp7s1/ipv4route
+default via 172.16.1.1
+```
+```bash
+vim /etc/net/ifaces/enp7s1/resolv.conf
+nameserver 9.9.9.9
+```
+```bash
+vim /etc/net/ifaces/enp7s2/options
+BOOTPROTO=none
+TYPE=eth
+```
+```bash
+vim /etc/net/ifaces/enp7s2.100/options
+BOOTPROTO=static
+TYPE=vlan
+VID=100
+HOST=enp7s2
+```
+```bash
+vim /etc/net/ifaces/enp7s2.100/ipv4address
+192.168.100.1/27
+```
+```bash
+vim /etc/net/ifaces/enp7s2.200/options
+BOOTPROTO=static
+TYPE=vlan
+VID=200
+HOST=enp7s2
+```
+```bash
+vim /etc/net/ifaces/enp7s2.200/ipv4address
+192.168.200.65/28
+```
+```bash
+vim /etc/net/ifaces/enp7s2.999/options
+BOOTPROTO=static
+TYPE=vlan
+VID=999
+HOST=enp7s2
+```
+```bash
+vim /etc/net/ifaces/enp7s2.999/ipv4address
+192.168.99.89/29
+```
+```bash
+systemctl restart network
+```
+```bash
+ip -c -br a
+```
+```bash
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp7s1           UP             172.16.1.2/28 fe80::be24:11ff:feda:daba/64 
+enp7s2           UP             fe80::be24:11ff:feae:ad50/64 
+enp7s2.100@enp7s2 UP             192.168.100.1/27 fe80::be24:11ff:feae:ad50/64 
+enp7s2.200@enp7s2 UP             192.168.200.65/28 fe80::be24:11ff:feae:ad50/64 
+enp7s2.999@enp7s2 UP             192.168.99.89/29 fe80::be24:11ff:feae:ad50/64
+```
