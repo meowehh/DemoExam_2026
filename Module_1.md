@@ -526,6 +526,9 @@ sudo cat /root/.bashrc
 
 ### HQ-RTR и BR-RTR
 ```bash
+apt-get update && apt-get install sudo -y
+```
+```bash
 useradd net_admin
 passwd net_admin
 usermod -a -G wheel net_admin
