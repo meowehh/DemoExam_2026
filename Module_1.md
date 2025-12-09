@@ -258,3 +258,45 @@ lo               UNKNOWN        127.0.0.1/8 ::1/128
 enp7s1           UP             172.16.2.2/28 fe80::be24:11ff:fe33:b6b2/64 
 enp7s2           UP             192.168.3.1/28 fe80::be24:11ff:fea1:62b4/64
 ```
+
+### BR-SRV
+⚠️ 💡 Для enp7s1 (/etc/net/ifaces/enp7s1/options) в HQ-RTR, нужно заменить:
+```bash
+vim /etc/net/ifaces/enp7s1/options 
+BOOTPROTO=dhcp
+TYPE=eth
+CONFIG_WIRELESS=no
+SYSTEMD_BOOTPROTO=dhcp4
+CONFIG_IPV4=yes
+DISABLED=no
+NM_CONTROLLED=no
+SYSTEMD_CONTROLLED=no
+```
+На те параметры что указаны ниже:
+```bash
+BOOTPROTO=static
+TYPE=eth
+```
+```bash
+vim /etc/net/ifaces/enp7s1/ipv4address
+192.168.3.2/28
+```
+```bash
+vim /etc/net/ifaces/enp7s1/ipv4route
+default via 192.168.3.1
+```
+```bash
+vim /etc/net/ifaces/enp7s1/resolv.conf
+nameserver 9.9.9.9
+```
+```bash
+systemctl restart network
+```
+```bash
+ip -c -br a
+```
+**Должен быть такой вывод у команды:**
+```bash
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp7s1           UP             192.168.3.2/28 fe80::be24:11ff:fed0:f63a/64 
+```
