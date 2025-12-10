@@ -1039,4 +1039,173 @@ ISP (интерфейс направленный в сторону BR-RTR) web.a
 
 ### HQ-SRV
 ```bash
+apt-get update && apt-get install bind nano -y
 ```
+```bash
+nano /etc/bind/options.conf
+listen-on { any; };
+forward first;
+forwarders {77.88.8.7; };
+allow-query { any; };
+```
+```bash
+nano /etc/bind/local.conf
+// Add other zones here
+// Зона прямого просмотра (A-записи)
+zone "au-team.irpo" {
+    type master;
+    file "/etc/bind/db.au-team.irpo";
+};
+
+// Зона обратного просмотра для сети 192.168.100.0
+zone "100.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.192.168.100";
+};
+
+// Зона обратного просмотра для сети 192.168.200.64
+zone "64.200.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.192.168.200.64";
+};
+
+# Обязательно 2 пробела через Enter вниз при редактировании через nano, и 1 пробел вниз через Enter при редактирование через vim, иначе не будет работать.
+```
+```bash
+nano /etc/bind/db.au-team.irpo
+$TTL 86400
+@   IN  SOA hq-srv.au-team.irpo. root.au-team.irpo. (
+        2025121001 ; serial
+        3600       ; refresh
+        1800       ; retry
+        604800     ; expire
+        86400 )    ; minimum
+
+    IN  NS  hq-srv.au-team.irpo.
+
+hq-rtr   IN  A   192.168.100.1
+br-rtr   IN  A   192.168.3.1
+hq-srv   IN  A   192.168.100.2
+hq-cli   IN  A   192.168.200.66
+br-srv   IN  A   192.168.3.2
+
+docker  IN   A   172.16.1.1
+web     IN   A   172.16.2.1
+
+# Обязательно 2 пробела через Enter вниз при редактировании через nano, и 1 пробел вниз через Enter при редактирование через vim, иначе не будет работать.
+```
+```bash
+nano /etc/bind/db.192.168.100
+$TTL 86400
+@   IN  SOA hq-srv.au-team.irpo. root.au-team.irpo. (
+        2025121001
+        3600
+        1800
+        604800
+        86400 )
+
+    IN  NS  hq-srv.au-team.irpo.
+
+1   IN  PTR  hq-rtr.au-team.irpo.
+2   IN  PTR  hq-srv.au-team.irpo.
+
+# Обязательно 2 пробела через Enter вниз при редактировании через nano, и 1 пробел вниз через Enter при редактирование через vim, иначе не будет работать.
+```
+```bash
+nano /etc/bind/db.192.168.200.64
+$TTL 86400
+@   IN  SOA hq-srv.au-team.irpo. root.au-team.irpo. (
+        2025121001
+        3600
+        1800
+        604800
+        86400 )
+
+    IN  NS  hq-srv.au-team.irpo.
+
+1  IN  PTR  hq-cli.au-team.irpo.
+
+# Обязательно 2 пробела через Enter вниз при редактировании через nano, и 1 пробел вниз через Enter при редактирование через vim, иначе не будет работать.
+```
+
+```bash
+rm -rf /etc/net/ifaces/enp7s1/resolv.conf 
+systemctl restart network
+```
+```bash
+nano /etc/resolvconf.conf
+name_servers=127.0.0.1
+```
+```bash
+resolvconf -u
+systemctl restart network
+```
+**Выполним проверку**:
+```bash
+cat /etc/resolv.conf | grep nameserver
+```
+**Если все настроено верно получаем такой ответ**:
+```bash
+nameserver 127.0.0.1
+```
+**Запускаем службу DNS**: 
+```bash
+systemctl enable --now bind
+systemctl restart bind
+```
+```bash
+systemctl status bind
+```
+```bash
+● bind.service - Berkeley Internet Name Domain (DNS)
+     Loaded: loaded (/lib/systemd/system/bind.service; enabled; vendor preset: disabled)
+     Active: active (running) since Wed 2025-12-10 10:34:08 +07; 4s ago
+    Process: 16785 ExecStartPre=/etc/init.d/bind rndc_keygen (code=exited, status=0/SUCCESS)
+    Process: 16790 ExecStartPre=/usr/sbin/named-checkconf $CHROOT -z /etc/named.conf (code=exited, status=0/SUCCESS)
+    Process: 16791 ExecStart=/usr/sbin/named -u named $CHROOT $RETAIN_CAPS $EXTRAOPTIONS (code=exited, status=0/SUCCESS)
+      Tasks: 5 (limit: 1131)
+     Memory: 11.0M
+        CPU: 23ms
+     CGroup: /system.slice/bind.service
+             └─ 16792 /usr/sbin/named -u named
+
+Dec 10 10:34:08 hq-srv.au-team.irpo named[16792]: network unreachable resolving './NS/IN': 2001:500:9f::42#53
+Dec 10 10:34:08 hq-srv.au-team.irpo named[16792]: network unreachable resolving './NS/IN': 2001:dc3::35#53
+Dec 10 10:34:08 hq-srv.au-team.irpo named[16792]: network unreachable resolving './NS/IN': 2001:503:c27::2:30#53
+Dec 10 10:34:08 hq-srv.au-team.irpo named[16792]: network unreachable resolving './NS/IN': 2001:500:1::53#53
+Dec 10 10:34:08 hq-srv.au-team.irpo named[16792]: network unreachable resolving './NS/IN': 2001:500:2f::f#53
+Dec 10 10:34:08 hq-srv.au-team.irpo named[16792]: network unreachable resolving './NS/IN': 2001:500:2::c#53
+Dec 10 10:34:08 hq-srv.au-team.irpo named[16792]: network unreachable resolving './NS/IN': 2001:500:a8::e#53
+Dec 10 10:34:09 hq-srv.au-team.irpo named[16792]: managed-keys-zone: Key 20326 for zone . is now trusted (acceptance timer complete)
+Dec 10 10:34:09 hq-srv.au-team.irpo named[16792]: managed-keys-zone: Key 38696 for zone . is now trusted (acceptance timer complete)
+Dec 10 10:34:09 hq-srv.au-team.irpo named[16792]: resolver priming query complete
+```
+>⚠️ **Важно**: Проверяем с помощью пинга соседей по их доменным именам, пробуем пинговать br-srv.au-team.irpo, hq-cli.au-team.irpo, moodle.au-team.irpo, wiki.au-team.irpo и так далее. Проверяем выход в Интернет. Далее небходимо настроить этот локальный DNS сервер для всех машин, так как на hq-cli настроен DHCP где уже прописан этот сервер, то это будет нужно сделать только на HQ-RTR,BR-RTR,BR-SRV.
+
+### HQ-RTR
+```bash
+vim /etc/net/ifaces/enp7s1/resolv.conf
+nameserver 192.168.100.2 # Старую запись удаляем, оставляем только новую.
+```
+```bash
+systemctl restart network
+```
+### BR-RTR
+```bash
+vim /etc/net/ifaces/enp7s1/resolv.conf
+nameserver 192.168.100.2 # Старую запись удаляем, оставляем только новую.
+```
+```bash
+systemctl restart network
+```
+### BR-SRV
+```bash
+vim /etc/net/ifaces/enp7s1/resolv.conf
+nameserver 192.168.100.2 # Старую запись удаляем, оставляем только новую.
+```
+```bash
+systemctl restart network
+```
+> Проверямем пинг до Интернета, локальных доменных имен, все должно работать, со всех машин на все машины.
+
+**Дополнительная информация**: После этих манипуляций, - Модуль 1: полностью выполнен, необходимо заполнить отчет как указано [здесь.](./report_2026.docx)
