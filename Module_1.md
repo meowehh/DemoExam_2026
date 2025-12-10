@@ -949,7 +949,7 @@ subnet 192.168.200.64 netmask 255.255.255.240 {
         option subnet-mask              255.255.255.240;
 
         option domain-name              "au-team.irpo";
-        option domain-name-servers      192.168.10.2;
+        option domain-name-servers      192.168.100.2;
 
         range dynamic-bootp 192.168.200.66 192.168.200.78;
         default-lease-time 600;
