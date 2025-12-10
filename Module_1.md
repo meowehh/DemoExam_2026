@@ -923,3 +923,93 @@ Neighbor ID     Pri State           Up Time         Dead Time Address         In
 ```
 
 >⚠️ 💡 Примечание: После того как OSPF успешно работает, нужно проверить пинг, напимер с HQ-SRV попробовать пинговать BR-SRV и обратно, пинг должен успешно проходить между любыми устройствами, кроме ISP и пока не настроенного HQ-CLI.
+
+## 📋 Задание 9: Настройте протокол динамической конфигурации хостов для сети в сторону HQ-CLI.
+
+**Задание 9**:
+- Настройть нужную подсеть.
+- Для офиса HQ в качестве сервера DHCP выступает маршрутизатор HQ-RTR.
+- Клиентом является машина HQ-CLI.
+- Исключить из выдачи адрес маршрутизатора.
+- Адрес шлюза по умолчанию – адрес маршрутизатора HQ-RTR.
+- Адрес DNS-сервера для машины HQ-CLI – адрес сервера HQ-SRV.
+- DNS-суффикс для офисов HQ – au-team.irpo
+- Сведения о настройке протокола занесите в [отчёт](./report_2025.docx)
+  
+### HQ-RTR
+```bash
+apt-get update && apt-get install dhcp-server nano -y #Рекомендуется настраивать через nano для корретной табуляци внутри dhcpd.conf.
+nano /etc/dhcp/dhcpd.conf.sample #Взять шаблон конфига настроек можно отсюда или готовый ниже.
+```
+**Готовый конфиг**:
+```bash
+nano /etc/dhcp/dhcpd.conf
+subnet 192.168.20.64 netmask 255.255.255.240 {
+        option routers                  192.168.20.65;
+        option subnet-mask              255.255.255.240;
+
+        option domain-name              "au-team.irpo";
+        option domain-name-servers      192.168.10.2;
+
+        range dynamic-bootp 192.168.20.66 192.168.20.78;
+        default-lease-time 600;
+        max-lease-time 7200;
+}
+```
+```bash
+systemctl enable --now dhcpd
+systemctl restart dhcpd
+```
+> С настройкой DHCP-сервера закончено, теперь получим IP если HQ-CLI ещё этого не сделал сам.
+
+### HQ-CLI
+```bash
+dhcpcd
+```
+Вывод у команды должен быть таким:
+```bash
+dhcpcd-9.4.0 starting
+DUID 00:04:a4:4f:22:43:ad:81:49:e1:b2:c7:06:fb:19:ec:1c:6a
+ens18: soliciting a DHCP lease
+ens18: offered 192.168.20.66 from 192.168.20.65
+ens18: leased 192.168.20.66 for 600 seconds
+ens18: adding route to 192.168.20.64/28
+ens18: adding default route via 192.168.20.65
+forked to background, child pid 2593
+```
+
+### HQ-RTR
+
+**Проверка службы на возможные ошибки**:
+```bash
+systemctl status dhcpd
+```
+Вывод должен быть таким:
+```bash
+● dhcpd.service - DHCPv4 Server Daemon
+     Loaded: loaded (/lib/systemd/system/dhcpd.service; enabled; vendor preset: disabled)
+     Active: active (running) since Wed 2025-12-03 23:00:06 MSK; 1min 50s ago
+       Docs: man:dhcpd(8)
+             man:dhcpd.conf(5)
+    Process: 3728 ExecStartPre=/etc/chroot.d/dhcpd.all (code=exited, status=0/SUCCESS)
+   Main PID: 3808 (dhcpd)
+      Tasks: 1 (limit: 1149)
+     Memory: 4.3M
+        CPU: 36ms
+     CGroup: /system.slice/dhcpd.service
+             └─ 3808 /usr/sbin/dhcpd -4 -f --no-pid
+
+Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]:    you want, please write a subnet declaration
+Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]:    in your dhcpd.conf file for the network segment
+Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]:    to which interface ens18 is attached. **
+Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]: Sending on   Socket/fallback/fallback-net
+Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]: Wrote 0 leases to leases file.
+Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]: Server starting service.
+Dec 03 23:00:39 hq-rtr.au-team.irpo dhcpd[3808]: DHCPDISCOVER from bc:24:11:c6:90:5d via ens19.20
+Dec 03 23:00:40 hq-rtr.au-team.irpo dhcpd[3808]: DHCPOFFER on 192.168.20.66 to bc:24:11:c6:90:5d (hq-cli) via ens19.20
+Dec 03 23:00:40 hq-rtr.au-team.irpo dhcpd[3808]: DHCPREQUEST for 192.168.20.66 (192.168.20.65) from bc:24:11:c6:90:5d (hq-cli) via ens19.20
+Dec 03 23:00:40 hq-rtr.au-team.irpo dhcpd[3808]: DHCPACK on 192.168.20.66 to bc:24:11:c6:90:5d (hq-cli) via ens19.20
+```
+>⚠️ 💡 **Примечание**: После этого пинг до интернета должен заработать, можно проверрить до 1.1.1.1, пинг по доменным именам пока что не работает, так как локальный DNS на HQ-SRV будет настроен ниже.
+
+>⚠️ **Важно**: В случае перезапуска сетевой службы network на HQ-RTR, необходимо в ручную перезапускать каждый раз службу dhcpd (systemctl restart dhcpd), так как она будет сыпать ошибками и выключаться.
