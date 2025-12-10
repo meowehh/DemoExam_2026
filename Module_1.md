@@ -765,8 +765,6 @@ show run
 ```
 **Вывод:**
 ```bash
-Building configuration...
-
 Current configuration:
 !
 frr version 9.0.2
@@ -801,8 +799,6 @@ vtysh
 show run
 ```
 ```bash
-Building configuration...
-
 Current configuration:
 !
 frr version 9.0.2
@@ -836,6 +832,37 @@ hq-rtr.au-team.irpo(config-if)# exit
 hq-rtr.au-team.irpo(config)# exit
 hq-rtr.au-team.irpo# wr
 ```
+```bash
+show run
+```
+**Содержание конфигурации FRR после настройки:**
+```bash
+Current configuration:
+!
+frr version 9.0.2
+frr defaults traditional
+hostname hq-rtr.au-team.irpo
+log file /var/log/frr/frr.log
+no ipv6 forwarding
+!
+interface gre1
+ ip ospf authentication
+ ip ospf authentication-key P@ssw0rd
+ ip ospf network broadcast
+ no ip ospf passive
+exit
+!
+router ospf
+ ospf router-id 172.16.1.1
+ network 10.10.0.0/30 area 0
+ network 192.168.99.88/29 area 0
+ network 192.168.100.0/27 area 0
+ network 192.168.200.64/28 area 0
+ area 0 authentication
+exit
+!
+end
+```
 ### BR-RTR
 ```bash
 br-rtr.au-team.irpo# conf t
@@ -853,15 +880,46 @@ br-rtr.au-team.irpo(config-if)# exit
 br-rtr.au-team.irpo(config)# exit
 br-rtr.au-team.irpo# wr
 ```
+```bash
+show run
+```
+**Содержание конфигурации FRR после настройки:**
+```bash
+Current configuration:
+!
+frr version 9.0.2
+frr defaults traditional
+hostname br-rtr.au-team.irpo
+log file /var/log/frr/frr.log
+no ipv6 forwarding
+!
+interface gre1
+ ip ospf authentication
+ ip ospf authentication-key P@ssw0rd
+ ip ospf network broadcast
+ no ip ospf passive
+exit
+!
+router ospf
+ ospf router-id 172.16.2.1
+ network 10.10.0.0/30 area 0
+ network 192.168.3.0/28 area 0
+ area 0 authentication
+exit
+!
+end
+```
 Проверим работоспобность OSPF, для этого воспользуемся информацией о соседях полученных через OSPF, состояние должно быть Full/DR,Full/Backup.
 ```bash
 hq-rtr.au-team.irpo# show ip ospf neighbor 
-
+Neighbor ID     Pri State           Up Time         Dead Time Address         Interface                        RXmtL RqstL DBsmL
+172.16.2.1        1 Full/Backup     1m01s             38.172s 10.10.0.2       gre1:10.10.0.1                       0     0     0
 
 ```
 ```bash
 br-rtr.au-team.irpo# show ip ospf neighbor
-
+Neighbor ID     Pri State           Up Time         Dead Time Address         Interface                        RXmtL RqstL DBsmL
+172.16.1.1        1 Full/DR         1m05s             34.321s 10.10.0.1       gre1:10.10.0.2                       0     0     0
 ```
 
 >⚠️ 💡 Примечание: После того как OSPF успешно работает, нужно проверить пинг, напимер с HQ-SRV попробовать пинговать BR-SRV и обратно, пинг должен успешно проходить между любыми устройствами, кроме ISP и пока не настроенного HQ-CLI.
