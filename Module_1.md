@@ -944,14 +944,14 @@ nano /etc/dhcp/dhcpd.conf.sample #Взять шаблон конфига нас�
 **Готовый конфиг**:
 ```bash
 nano /etc/dhcp/dhcpd.conf
-subnet 192.168.20.64 netmask 255.255.255.240 {
-        option routers                  192.168.20.65;
+subnet 192.168.200.64 netmask 255.255.255.240 {
+        option routers                  192.168.200.65;
         option subnet-mask              255.255.255.240;
 
         option domain-name              "au-team.irpo";
         option domain-name-servers      192.168.10.2;
 
-        range dynamic-bootp 192.168.20.66 192.168.20.78;
+        range dynamic-bootp 192.168.200.66 192.168.200.78;
         default-lease-time 600;
         max-lease-time 7200;
 }
