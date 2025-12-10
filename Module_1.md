@@ -763,6 +763,7 @@ reboot
 vtysh
 show run
 ```
+**Вывод:**
 ```bash
 Building configuration...
 
@@ -780,3 +781,87 @@ exit
 !
 end
 ```
+> Если все было настроено верно (интерфейс gre,ospfd и нигде не было ошибки) получаем такой вывод, самое главное у вас сама по себе должна появиться строка с интрефейсом, не нужно создавать его самим на FRR, нужно выполнить все в точности как у меня, если интерфейс gre1 внутри FRR создается сам, отсекается большая часть проблем.
+
+### BR-RTR
+```bash
+apt-get update && apt-get install frr -y
+```
+```bash
+vim /etc/frr/daemons
+ospfd=yes
+```
+```bash
+systemctl enable --now frr
+systemctl restart frr
+reboot
+```
+```bash
+vtysh
+show run
+```
+```bash
+Building configuration...
+
+Current configuration:
+!
+frr version 9.0.2
+frr defaults traditional
+hostname br-rtr.au-team.irpo
+log file /var/log/frr/frr.log
+no ipv6 forwarding
+!
+interface gre1
+ ip ospf network broadcast
+exit
+!
+end
+```
+### HQ-RTR
+```bash
+hq-rtr.au-team.irpo# conf t
+hq-rtr.au-team.irpo(config)# router ospf
+hq-rtr.au-team.irpo(config-router)# ospf router-id 172.16.1.1
+hq-rtr.au-team.irpo(config-router)# network 10.10.0.0/30 area 0
+hq-rtr.au-team.irpo(config-router)# network 192.168.100.0/27 area 0
+hq-rtr.au-team.irpo(config-router)# network 192.168.200.64/28 area 0
+hq-rtr.au-team.irpo(config-router)# network 192.168.99.88/29 area 0
+hq-rtr.au-team.irpo(config-router)# area 0 authentication
+hq-rtr.au-team.irpo(config-router)# exit
+hq-rtr.au-team.irpo(config)# interface gre1 
+hq-rtr.au-team.irpo(config-if)# ip ospf authentication-key P@ssw0rd
+hq-rtr.au-team.irpo(config-if)# ip ospf authentication             
+hq-rtr.au-team.irpo(config-if)# no ip ospf passive
+hq-rtr.au-team.irpo(config-if)# exit
+hq-rtr.au-team.irpo(config)# exit
+hq-rtr.au-team.irpo# wr
+```
+### BR-RTR
+```bash
+br-rtr.au-team.irpo# conf t
+br-rtr.au-team.irpo(config)# router ospf
+br-rtr.au-team.irpo(config-router)# ospf router-id 172.16.2.1
+br-rtr.au-team.irpo(config-router)# network 10.10.0.0/30 area 0
+br-rtr.au-team.irpo(config-router)# network 192.168.3.0/28 area 0
+br-rtr.au-team.irpo(config-router)# area 0 authentication 
+br-rtr.au-team.irpo(config-router)# exit
+br-rtr.au-team.irpo(config)# interface gre1
+br-rtr.au-team.irpo(config-if)# ip ospf authentication-key P@ssw0rd
+br-rtr.au-team.irpo(config-if)# ip ospf authentication             
+br-rtr.au-team.irpo(config-if)# no ip ospf passive
+br-rtr.au-team.irpo(config-if)# exit
+br-rtr.au-team.irpo(config)# exit
+br-rtr.au-team.irpo# wr
+```
+Проверим работоспобность OSPF, для этого воспользуемся информацией о соседях полученных через OSPF, состояние должно быть Full/DR,Full/Backup.
+```bash
+hq-rtr.au-team.irpo# show ip ospf neighbor 
+
+
+```
+```bash
+br-rtr.au-team.irpo# show ip ospf neighbor
+
+```
+
+>⚠️ 💡 Примечание: После того как OSPF успешно работает, нужно проверить пинг, напимер с HQ-SRV попробовать пинговать BR-SRV и обратно, пинг должен успешно проходить между любыми устройствами, кроме ISP и пока не настроенного HQ-CLI.
