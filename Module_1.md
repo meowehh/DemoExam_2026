@@ -1217,7 +1217,7 @@ ping br-srv.au-team.irpo
 ping web.au-team.irpo
 ping docker.au-team.irpo
 ```
-**Вывод (на каждой машине будет немного отличаться для br-rtr,br-srv так как для них по заданию нет PTR записи):**
+**Вывод (на каждой машине будет немного отличаться для тех узлов для которых по заданию нет PTR записи, главное чтобы был ответ):**
 ```bash
 PING hq-rtr.au-team.irpo (192.168.100.1) 56(84) bytes of data.
 64 bytes from hq-rtr.au-team.irpo (192.168.100.1): icmp_seq=1 ttl=63 time=0.988 ms
