@@ -1189,6 +1189,7 @@ nameserver 192.168.100.2 # Старую запись удаляем, остав�
 ```
 ```bash
 systemctl restart network
+systemctl restart dhcpd
 ```
 ### BR-RTR
 ```bash
