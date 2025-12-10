@@ -1207,6 +1207,60 @@ nameserver 192.168.100.2 # Старую запись удаляем, остав�
 ```bash
 systemctl restart network
 ```
+### HQ-RTR,HQ-CLI,HQ-SRV,BR-RTR,BR-SRV
+```bash
+ping hq-rtr.au-team.irpo
+ping hq-cli.au-team.irpo
+ping hq-srv.au-team.irpo
+ping br-rtr.au-team.irpo
+ping br-srv.au-team.irpo
+ping web.au-team.irpo
+ping docker.au-team.irpo
+```
+**Вывод (на каждой машине будет немного отличаться для br-rtr,br-srv так как для них по заданию нет PTR записи):**
+```bash
+PING hq-rtr.au-team.irpo (192.168.100.1) 56(84) bytes of data.
+64 bytes from hq-rtr.au-team.irpo (192.168.100.1): icmp_seq=1 ttl=63 time=0.988 ms
+64 bytes from hq-rtr.au-team.irpo (192.168.100.1): icmp_seq=2 ttl=63 time=1.21 ms
+64 bytes from hq-rtr.au-team.irpo (192.168.100.1): icmp_seq=3 ttl=63 time=1.21 ms
+64 bytes from hq-rtr.au-team.irpo (192.168.100.1): icmp_seq=4 ttl=63 time=0.940 ms
+
+PING hq-srv.au-team.irpo (192.168.100.2) 56(84) bytes of data.
+64 bytes from hq-srv.au-team.irpo (192.168.100.2): icmp_seq=1 ttl=62 time=0.950 ms
+64 bytes from hq-srv.au-team.irpo (192.168.100.2): icmp_seq=2 ttl=62 time=1.32 ms
+64 bytes from hq-srv.au-team.irpo (192.168.100.2): icmp_seq=3 ttl=62 time=1.24 ms
+64 bytes from hq-srv.au-team.irpo (192.168.100.2): icmp_seq=4 ttl=62 time=1.31 ms
+
+PING hq-cli.au-team.irpo (192.168.200.66) 56(84) bytes of data.
+64 bytes from 192.168.200.66 (192.168.200.66): icmp_seq=1 ttl=62 time=1.08 ms
+64 bytes from 192.168.200.66 (192.168.200.66): icmp_seq=2 ttl=62 time=1.29 ms
+64 bytes from 192.168.200.66 (192.168.200.66): icmp_seq=3 ttl=62 time=1.24 ms
+64 bytes from 192.168.200.66 (192.168.200.66): icmp_seq=4 ttl=62 time=1.23 ms
+
+PING br-rtr.au-team.irpo (192.168.3.1) 56(84) bytes of data.
+64 bytes from 192.168.3.1 (192.168.3.1): icmp_seq=1 ttl=63 time=0.993 ms
+64 bytes from 192.168.3.1 (192.168.3.1): icmp_seq=2 ttl=63 time=1.22 ms
+64 bytes from 192.168.3.1 (192.168.3.1): icmp_seq=3 ttl=63 time=1.29 ms
+64 bytes from 192.168.3.1 (192.168.3.1): icmp_seq=4 ttl=63 time=1.11 ms
+
+PING br-srv.au-team.irpo (192.168.3.2) 56(84) bytes of data.
+64 bytes from 192.168.3.2 (192.168.3.2): icmp_seq=1 ttl=62 time=1.18 ms
+64 bytes from 192.168.3.2 (192.168.3.2): icmp_seq=2 ttl=62 time=1.29 ms
+64 bytes from 192.168.3.2 (192.168.3.2): icmp_seq=3 ttl=62 time=1.34 ms
+64 bytes from 192.168.3.2 (192.168.3.2): icmp_seq=4 ttl=62 time=1.35 ms
+
+PING docker.au-team.irpo (172.16.1.1) 56(84) bytes of data.
+64 bytes from 172.16.1.1 (172.16.1.1): icmp_seq=1 ttl=63 time=0.544 ms
+64 bytes from 172.16.1.1 (172.16.1.1): icmp_seq=2 ttl=63 time=0.737 ms
+64 bytes from 172.16.1.1 (172.16.1.1): icmp_seq=3 ttl=63 time=0.983 ms
+64 bytes from 172.16.1.1 (172.16.1.1): icmp_seq=4 ttl=63 time=0.790 ms
+
+PING web.au-team.irpo (172.16.2.1) 56(84) bytes of data.
+64 bytes from 172.16.2.1 (172.16.2.1): icmp_seq=1 ttl=63 time=0.551 ms
+64 bytes from 172.16.2.1 (172.16.2.1): icmp_seq=2 ttl=63 time=0.905 ms
+64 bytes from 172.16.2.1 (172.16.2.1): icmp_seq=3 ttl=63 time=0.905 ms
+64 bytes from 172.16.2.1 (172.16.2.1): icmp_seq=4 ttl=63 time=0.810 ms
+```
 > Проверямем пинг до Интернета, локальных доменных имен, все должно работать, со всех машин на все машины.
 
 **Дополнительная информация**: После этих манипуляций, - Модуль 1: полностью выполнен, необходимо заполнить отчет как указано [здесь.](./report_2026.odt)
