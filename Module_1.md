@@ -970,12 +970,20 @@ dhcpcd
 ```bash
 dhcpcd-9.4.0 starting
 DUID 00:04:a4:4f:22:43:ad:81:49:e1:b2:c7:06:fb:19:ec:1c:6a
-ens18: soliciting a DHCP lease
-ens18: offered 192.168.20.66 from 192.168.20.65
-ens18: leased 192.168.20.66 for 600 seconds
-ens18: adding route to 192.168.20.64/28
-ens18: adding default route via 192.168.20.65
+enp7s1: soliciting a DHCP lease
+enp7s1: offered 192.168.200.66 from 192.168.200.65
+enp7s1: leased 192.168.200.66 for 600 seconds
+enp7s1: adding route to 192.168.200.64/28
+enp7s1: adding default route via 192.168.200.65
 forked to background, child pid 2593
+```
+```bash
+ip -c -br a
+```
+**Вывод:**
+```bash
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp7s1           UP             192.168.200.66/28 fe80::be24:11ff:fec6:63e9/64 
 ```
 
 ### HQ-RTR
@@ -988,27 +996,23 @@ systemctl status dhcpd
 ```bash
 ● dhcpd.service - DHCPv4 Server Daemon
      Loaded: loaded (/lib/systemd/system/dhcpd.service; enabled; vendor preset: disabled)
-     Active: active (running) since Wed 2025-12-03 23:00:06 MSK; 1min 50s ago
+     Active: active (running) since Wed 2025-12-10 10:12:20 +07; 2min 8s ago
        Docs: man:dhcpd(8)
              man:dhcpd.conf(5)
-    Process: 3728 ExecStartPre=/etc/chroot.d/dhcpd.all (code=exited, status=0/SUCCESS)
-   Main PID: 3808 (dhcpd)
-      Tasks: 1 (limit: 1149)
+    Process: 3338 ExecStartPre=/etc/chroot.d/dhcpd.all (code=exited, status=0/SUCCESS)
+   Main PID: 3419 (dhcpd)
+      Tasks: 1 (limit: 529)
      Memory: 4.3M
-        CPU: 36ms
+        CPU: 40ms
      CGroup: /system.slice/dhcpd.service
-             └─ 3808 /usr/sbin/dhcpd -4 -f --no-pid
+             └─ 3419 /usr/sbin/dhcpd -4 -f --no-pid
 
-Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]:    you want, please write a subnet declaration
-Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]:    in your dhcpd.conf file for the network segment
-Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]:    to which interface ens18 is attached. **
-Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]: Sending on   Socket/fallback/fallback-net
-Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]: Wrote 0 leases to leases file.
-Dec 03 23:00:06 hq-rtr.au-team.irpo dhcpd[3808]: Server starting service.
-Dec 03 23:00:39 hq-rtr.au-team.irpo dhcpd[3808]: DHCPDISCOVER from bc:24:11:c6:90:5d via ens19.20
-Dec 03 23:00:40 hq-rtr.au-team.irpo dhcpd[3808]: DHCPOFFER on 192.168.20.66 to bc:24:11:c6:90:5d (hq-cli) via ens19.20
-Dec 03 23:00:40 hq-rtr.au-team.irpo dhcpd[3808]: DHCPREQUEST for 192.168.20.66 (192.168.20.65) from bc:24:11:c6:90:5d (hq-cli) via ens19.20
-Dec 03 23:00:40 hq-rtr.au-team.irpo dhcpd[3808]: DHCPACK on 192.168.20.66 to bc:24:11:c6:90:5d (hq-cli) via ens19.20
+Dec 10 10:12:20 hq-rtr.au-team.irpo dhcpd[3419]: Wrote 0 leases to leases file.
+Dec 10 10:12:20 hq-rtr.au-team.irpo dhcpd[3419]: Server starting service.
+Dec 10 10:12:22 hq-rtr.au-team.irpo dhcpd[3419]: DHCPDISCOVER from bc:24:11:c6:63:e9 via enp7s2.200
+Dec 10 10:12:23 hq-rtr.au-team.irpo dhcpd[3419]: DHCPOFFER on 192.168.200.66 to bc:24:11:c6:63:e9 (hq-cli) via enp7s2.200
+Dec 10 10:12:23 hq-rtr.au-team.irpo dhcpd[3419]: DHCPREQUEST for 192.168.200.66 (192.168.200.65) from bc:24:11:c6:63:e9 (hq-cli) via enp7s2.200
+Dec 10 10:12:23 hq-rtr.au-team.irpo dhcpd[3419]: DHCPACK on 192.168.200.66 to bc:24:11:c6:63:e9 (hq-cli) via enp7s2.200
 ```
 >⚠️ 💡 **Примечание**: После этого пинг до интернета должен заработать, можно проверрить до 1.1.1.1, пинг по доменным именам пока что не работает, так как локальный DNS на HQ-SRV будет настроен ниже.
 
