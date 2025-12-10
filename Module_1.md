@@ -1027,7 +1027,6 @@ Dec 10 10:12:23 hq-rtr.au-team.irpo dhcpd[3419]: DHCPACK on 192.168.200.66 to bc
 
 **Таблица 3:**
 ```bash
-Таблица 3
 Устройство Запись Тип
 HQ-RTR hq-rtr.au-team.irpo A,PTR
 BR-RTR br-rtr.au-team.irpo A
