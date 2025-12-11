@@ -147,7 +147,7 @@ SHELLCMD
 ```
 Для понимания где находятся эти строки, и куда их нужно добавить - пример того как это реализовано у меня:
 ```bash
-User_Alias WHEEL_USERS = %wheel, AU-TEAM\\hq # Первая строка
+User_Alias WHEEL_USERS = %wheel, %AU-TEAM\\hq # Первая строка
 User_Alias XGRP_USERS = %xgrp
 # User_Alias SUDO_USERS = %sudo
 
