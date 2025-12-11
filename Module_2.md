@@ -234,4 +234,67 @@ apt-get update && apt-get install yandex-browser -y
 
 ### HQ-SRV
 ```bash
+lsblk
+mdadm -C /dev/md0 -l 0 -n 2 /dev/sd{b,c}
+lsblk
+mkfs.ext4 /dev/md0
+echo DEVICE partitions >> /etc/mdadm.conf
+mdadm --detail --scan >> /etc/mdadm.conf
+mkdir /raid
 ```
+```bash
+mcedit /etc/fstab
+/dev/md0	/raid ext4 defaults	0	0
+```
+```bash
+mount -a
+df -h
+lsblk
+```
+```bash
+apt-get update && apt-get install -y nfs-{server,utils}
+mkdir /raid/nfs
+chmod 766 /raid/nfs
+```
+Комментируем первую строку в файле /etc/exports, в самом низу прописываем, то что идет ниже.
+```
+mcedit /etc/exports
+/raid0/nfs 192.168.2.0/28(rw,no_subtree_check,no_root_squash)
+```
+**Применяем изменения:**
+```bash
+exportfs -arv
+systemctl enable --now nfs-server.service
+systemctl restart nfs-server.service
+```
+### HQ-CLI
+```bash
+apt-get update && apt-get install -y nfs-{server,utils}
+mkdir /mnt/nfs
+chmod 777 /mnt/nfs
+```
+```bash
+mcedit /etc/fstab
+192.168.1.10:/raid/nfs	/mnt/nfs	nfs	defaults	0	0
+systemctl enable --now nfs-server.service
+systemctl restart nfs-server.service
+```
+**Монтируем файловую систему и делаем финальную проверку RAID:**
+```bash
+mount -a
+df -h
+```
+**Вывод команды:**
+```bash
+Файловая система       Размер Использовано  Дост Использовано% Cмонтировано в
+udevfs                   5,0M         100K  5,0M            2% /dev
+runfs                    1,3G         1,3M  1,3G            1% /run
+/dev/sda2                 15G         7,1G  6,5G           53% /
+tmpfs                    1,3G            0  1,3G            0% /dev/shm
+tmpfs                    1,3G         4,0K  1,3G            1% /tmp
+/dev/sda1                473M          55M  390M           13% /var/log
+192.168.1.10:/raid/nfs   2,0G            0  1,9G            0% /mnt/nfs
+tmpfs                    247M          56K  247M            1% /run/user/0
+tmpfs                    247M          80K  247M            1% /run/user/812001105
+```
+> ⚠️ 💡 **Примечание**: Пробуем перезагрузку обоих устройств и проверяем вывод через df -h снова, расшаренная файловая система с RAID - должна автоматически доступна.
