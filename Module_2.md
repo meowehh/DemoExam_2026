@@ -305,6 +305,37 @@ tmpfs                    247M          80K  247M            1% /run/user/8120011
 - Вышестоящий сервер ntp на маршрутизаторе ISP - на выбор участника.
 - Стратум сервера - 5
 - В качестве клиентов ntp настройте: HQ-SRV, HQ-CLI, BR-RTR, BR-SRV.
+
 ### ISP
 ```bash
+apt-get update && apt-get install -y chrony
 ```
+```bash
+vim /etc/chrony.conf
+pool ntp0.ntp-servers.net iburst
+pool 127.0.0.1 iburst 
+hwtimestamp *
+local stratum 5
+allow 0/0
+```
+**Запустим службу времени:**
+```bash
+systemctl restart chronyd
+systemctl enable --now chronyd
+timedatectl set-timezone Asia/Novosibirsk
+```
+**В качестве клиентов настроим: HQ-SRV, HQ-CLI, BR-RTR, BR-SRV, выполнить настройку нужно идентично нижней на всех 4-ех клиентах.**
+```bash
+apt-get update && apt-get install -y chrony tzdata
+vim /etc/chrony.conf
+pool 172.16.1.1 iburst prefer
+systemctl restart chronyd
+systemctl enable --now chronyd
+timedatectl set-timezone Asia/Novosibirsk
+```
+**Хоть на HQ-RTR и не настраивается chrony, но часовой пояс укажем и там тоже.**
+### HQ-RTR
+```bash
+timedatectl set-timezone Asia/Novosibirsk
+```
+> ⚠️ 💡 **Примечание**: На HQ-CLI уже будет сервер времени, нужно лишь добавить новый pool.
