@@ -308,12 +308,11 @@ tmpfs                    247M          80K  247M            1% /run/user/8120011
 
 ### ISP
 ```bash
-apt-get update && apt-get install -y chrony
+apt-get update && apt-get install -y chrony tzdata
 ```
 ```bash
 vim /etc/chrony.conf
-pool ntp0.ntp-servers.net iburst
-pool 127.0.0.1 iburst 
+pool 127.0.0.1 iburst prefer
 hwtimestamp *
 local stratum 5
 allow 0/0
