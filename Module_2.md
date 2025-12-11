@@ -332,8 +332,8 @@ systemctl restart chronyd
 systemctl enable --now chronyd
 timedatectl set-timezone Asia/Novosibirsk
 ```
-**Хоть на HQ-RTR и не настраивается chrony, но часовой пояс укажем и там тоже.**
 ### HQ-RTR
+**Хоть на HQ-RTR и не настраивается chrony, но часовой пояс укажем и там тоже.**
 ```bash
 timedatectl set-timezone Asia/Novosibirsk
 ```
