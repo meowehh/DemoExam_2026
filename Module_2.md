@@ -140,7 +140,9 @@ roleadd hq wheel
 ```bash
 rolelst
 ```
+> [!IMPORTANT]
 > **Проверяем наличие hq:wheel**
+
 **Добавляем в sudoers данные строки:**
 ```bash
 mcedit /etc/sudoers
