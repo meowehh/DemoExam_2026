@@ -312,6 +312,7 @@ apt-get update && apt-get install -y chrony tzdata
 ```
 ```bash
 vim /etc/chrony.conf
+initstepslew 10 ntp0.ntp-servers.net
 pool 127.0.0.1 iburst prefer
 hwtimestamp *
 local stratum 5
