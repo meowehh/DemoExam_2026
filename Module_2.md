@@ -463,3 +463,148 @@ hq-cli.au-team.irpo | SUCCESS => {
 - Контейнер с базой данных должен называться db
 - Импортируйте образы в docker, укажите в yaml файле параметры подключения к СУБД, имя БД - testdb, пользователь testс паролем P@ssw0rd, порт приложения 8080, при необходимости другие параметры
 - Приложение должно быть доступно для внешних подключений через порт 8080
+
+### BR-SRV
+```bash
+apt-get update && apt-get install docker-ce docker-compose -y
+systemctl enable --now docker.socket docker.service
+systemctl restart docker.socket docker.service
+```
+```bash
+mount /dev/sr0 /mnt
+```
+**Проверяем точку монтирования:**
+```bash
+lsblk
+```
+**Сверяем вывод:**
+```bash
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda      8:0    0    10G  0 disk 
+├─sda1   8:1    0   503M  0 part /var/log
+└─sda2   8:2    0   9.5G  0 part /
+sr0     11:0    1 929.7M  0 rom  /mnt
+```
+**Проверяем содержимое внутри образа:**
+```bash
+ls -la /mnt
+```
+```bash
+total 38
+dr-xr-xr-x  1 root root   256 Nov 23  2019 .
+drwxr-xr-x 24 root root  4096 Dec 11 01:08 ..
+dr-xr-xr-x  1 root root   332 Nov 23  2019 docker
+dr-xr-xr-x  1 root root   150 Nov 23  2019 playbook
+-r-xr-xr-x  1 root root 32527 Oct 13 04:22 Users.csv
+dr-xr-xr-x  1 root root   220 Nov 23  2019 web
+```
+**Копируем docker с образа на систему:**
+```bash
+cp -r /mnt/docker /root/docker
+```
+**Проверяем файлы:**
+```bash
+ls -la /root/docker
+```
+```bash
+total 951964
+dr-xr-xr-x 2 root root      4096 Dec 12 22:54 .
+drwx------ 8 root root      4096 Dec 12 22:54 ..
+-r-xr-xr-x 1 root root 333014016 Dec 12 22:54 mariadb_latest.tar
+-r-xr-xr-x 1 root root 282003968 Dec 12 22:54 postgresql_latest.tar
+-r-xr-xr-x 1 root root      2716 Dec 12 22:54 readme.txt
+-r-xr-xr-x 1 root root 359760896 Dec 12 22:54 site_latest.tar
+```
+**Загружаем в docker**
+```bash
+docker load -i /root/docker/site_latest.tar
+docker load -i /root/docker/mariadb_latest.tar
+```
+**Сверяем и проверяем TAG, это потребуется для image: в docker-compose.yaml**
+```bash
+docker image ls
+```
+**У меня получился такой вывод:**
+```bash
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+site         latest    015b4b821098   2 months ago   353MB
+mariadb      10.11     bc52d24721da   4 months ago   327MB
+```
+**Создаем директорию и файл конфигурации:**
+```bash
+mkdir testapp
+nano testapp/docker-compose.yaml
+```
+```bash
+services:
+  testapp:
+    image: site:latest
+    container_name: testapp # В задании указано tespapp, скорее всего опечатка составителей.
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:8000"
+    environment:
+      DB_TYPE: maria
+      DB_HOST: db
+      DB_NAME: testdb
+      DB_PORT: 3306
+      DB_USER: testc
+      DB_PASS: P@ssw0rd   
+
+  db:
+    image: mariadb:10.11
+    container_name: db
+    restart: always
+    environment:
+      MARIADB_NAME: testdb
+      MARIADB_USER: testc
+      MARIADB_PASS: P@ssw0rd   
+      MARIADB_ROOT_PASSWORD: toor
+    volumes:
+      - /root/testapp/db_data:/var/lib/mysql
+```
+**Переходим в директорию если ещё не перешли, и поднимаем Docker:**
+```bash
+cd testapp/
+docker compose up -d
+docker ps
+```
+**Сверяем вывод:**
+```bash
+CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS                         PORTS      NAMES
+2f8db625ddfc   site:latest     "sh -c 'python3 -m a…"   22 seconds ago   Restarting (1) 2 seconds ago              testapp
+13af1bc1529e   mariadb:10.11   "docker-entrypoint.s…"   22 seconds ago   Up 21 seconds                  3306/tcp   db
+```
+> На этом этапе заходим на HQ-CLI, и через Firefox пробуем зайти на 192.168.3.10:8080, если страница не открывается, то выполняем действия ниже, если открылась, задание выполнено.
+### BR-SRV
+```bash
+docker exec -it db /bin/bash
+mariadb -u root -p
+toor
+```
+```bash
+SHOW DATABASES;
+```
+**Причина кроется тут, нет нужно базы данных, пропишем ее и пользователя, а так же привилегии в ручную:**
+```bash
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.001 sec)
+```
+**Выполняем по очереди, в точности как у меня:**
+```bash
+CREATE DATABASE testdb;
+MariaDB [(none)]> CREATE USER 'testc'@'%' IDENTIFIED BY 'P@ssw0rd';
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON testdb.* TO 'testc'@'%';
+FLUSH PRIVILEGES;
+```
+> [!NOTE]  
+> Пробуем снова с HQ-CLI зайти на 192.168.3.10:8080, если страница открывается, задание выполнено.
