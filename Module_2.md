@@ -354,10 +354,10 @@ apt-get update && apt-get install openssh-server ansible sshpass nano -y
 ```bash
 nano /etc/ansible/hosts
 [Alt]
-192.168.2.1 ansible_ssh_user=net_admin ansible_ssh_pass=P@ssw0rd
-192.168.1.10 ansible_ssh_user=sshuser ansible_ssh_pass=P@ssw0rd
-192.168.2.10 ansible_ssh_user=sysadmin ansible_ssh_pass=P@ssw0rd
-192.168.3.1 ansible_ssh_user=net_admin ansible_ssh_pass=P@ssw0rd
+hq-rtr.au-team.irpo ansible_ssh_user=net_admin ansible_ssh_pass=P@ssw0rd
+hq-srv.au-team.irpo ansible_ssh_user=sshuser ansible_ssh_pass=P@ssw0rd
+hq-cli.au-team.irpo ansible_ssh_user=sysadmin ansible_ssh_pass=P@ssw0rd
+br-rtr.au-team.irpo ansible_ssh_user=net_admin ansible_ssh_pass=P@ssw0rd
 
 [Alt:vars]
 ansible_port=2026
@@ -435,19 +435,19 @@ ansible -m ping all
 ```
 **Вывод команды**:
 ```bash
-192.168.3.1 | SUCCESS => {
+hq-srv.au-team.irpo | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-192.168.2.1 | SUCCESS => {
+br-rtr.au-team.irpo | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-192.168.1.10 | SUCCESS => {
+hq-rtr.au-team.irpo | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-192.168.2.10 | SUCCESS => {
+hq-cli.au-team.irpo | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
