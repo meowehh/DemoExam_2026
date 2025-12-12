@@ -371,7 +371,12 @@ interpreter_python = /usr/bin/python3
 # uncomment this to disable SSH key host checking
 host_key_checking = False
 ```
+```bash
+ansible -m ping all
+```
+> Если есть положительные ответы уже на этом моменте, то там где они положительные - настройку не производим.
 
+> В моем случае HQ-SRV уже настроен на порт 2026 с данными для авторизации что я указал выше.
 ### HQ-SRV
 ```bash
 apt-get update && apt-get install openssh-server -y
