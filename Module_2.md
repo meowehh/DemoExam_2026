@@ -789,4 +789,83 @@ systemctl restart httpd2 mariadb
 
 ### BR-RTR
 ```bash
+apt-get update && apt-get install iptables -y
 ```
+**Проброс порта 8080 для testapp (Docker приложение на BR-SRV).**
+```bash
+iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 192.168.3.10:8080
+iptables -A FORWARD -p tcp -d 192.168.3.10 --dport 8080 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+```
+**Проброс порта 2026 для SSH.**
+```bash
+iptables -t nat -A PREROUTING -p tcp --dport 2026 -j DNAT --to-destination 192.168.3.10:2026
+iptables -A FORWARD -p tcp -d 192.168.3.10 --dport 2026 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+```
+**Сохранение правил и перезапуск.**
+```bash
+iptables-save > /etc/sysconfig/iptables
+systemctl restart iptables
+systemctl enable --now iptables
+```
+**Выполним проверку:**
+```bash
+iptables -t nat -L -n -v
+```
+**Сверяем вывод:**
+```bash
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:192.168.3.10:8080
+    0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:2026 to:192.168.3.10:2026
+
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+```
+
+### HQ-RTR
+```bash
+apt-get update && apt-get install iptables -y
+```
+**Проброс порта 8080 для веб-приложения Apache (перенаправляем на порт 80 HQ-SRV).**
+```bash
+iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 192.168.1.10:80
+iptables -A FORWARD -p tcp -d 192.168.1.10 --dport 80 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+```
+**Проброс порта 2026 для SSH.**
+```bash
+iptables -t nat -A PREROUTING -p tcp --dport 2026 -j DNAT --to-destination 192.168.1.10:2026
+iptables -A FORWARD -p tcp -d 192.168.1.10 --dport 2026 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+```
+**Сохранение правил и перезапуск.**
+```bash
+iptables-save > /etc/sysconfig/iptables
+systemctl restart iptables
+systemctl enable --now iptables
+```
+**Выполним проверку:**
+```bash
+iptables -t nat -L -n -v
+```
+**Сверяем вывод:**
+```bash
+Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:192.168.1.10:80
+    0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:2026 to:192.168.1.10:2026
+
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+```
+> [!NOTE]
+> Если выводы совпадают, задание выполнено верно.
