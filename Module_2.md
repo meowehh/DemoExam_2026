@@ -964,8 +964,8 @@ server {
 }
 ```
 ```bash
-ln -s /etc/nginx/sites-available.d/web.conf /etc/nginx/sites-available.d/web.conf
-ln -s /etc/nginx/sites-available.d/docker.conf /etc/nginx/sites-available.d/docker.conf
+ln -s /etc/nginx/sites-available.d/web.conf /etc/nginx/sites-enabled.d/web.conf
+ln -s /etc/nginx/sites-available.d/docker.conf /etc/nginx/sites-enabled.d/docker.conf
 ```
 ```bash
 systemctl restart nginx
