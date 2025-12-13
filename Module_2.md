@@ -925,6 +925,7 @@ server {
 ```bash
 cp /etc/nginx/sites-available.d/web.conf /etc/nginx/sites-available.d/docker.conf
 nano /etc/nginx/sites-available.d/docker.conf
+```
 ```bash
 upstream web.au-team.irpo {
         server 172.16.2.10
