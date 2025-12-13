@@ -622,7 +622,7 @@ MariaDB [(none)]> CREATE USER 'testc'@'%' IDENTIFIED BY 'P@ssw0rd';
 MariaDB [(none)]> GRANT ALL PRIVILEGES ON testdb.* TO 'testc'@'%';
 FLUSH PRIVILEGES;
 ```
-> [!IMPORTANT] 
+> [!Tip] 
 > Пробуем снова с HQ-CLI зайти на 192.168.3.10:8080, если страница открывается, задание выполнено.
 
 ## 📋 Задание 7:  Разверните веб приложение на сервере HQ-SRV.
