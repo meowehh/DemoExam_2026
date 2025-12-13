@@ -592,6 +592,12 @@ CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS 
 2f8db625ddfc   site:latest     "sh -c 'python3 -m a…"   22 seconds ago   Restarting (1) 2 seconds ago              testapp
 13af1bc1529e   mariadb:10.11   "docker-entrypoint.s…"   22 seconds ago   Up 21 seconds                  3306/tcp   db
 ```
+**Либо может быть так:**
+```bash
+CONTAINER ID   IMAGE           COMMAND                  CREATED       STATUS             PORTS                                       NAMES
+264276eed58b   site:latest     "sh -c 'python3 -m a…"   27 seconds ago   Up 26 seconds   0.0.0.0:8080->8000/tcp, :::8080->8000/tcp   testapp
+8e79d22f6fa7   mariadb:10.11   "docker-entrypoint.s…"   27 seconds ago   Up 26 seconds   3306/tcp                                    db
+```
 > [!CAUTION]
 > На этом этапе заходим на HQ-CLI, и через Firefox пробуем зайти на 192.168.3.10:8080, если страница не открывается, то выполняем действия ниже, если открылась, задание выполнено.
 ### BR-SRV
