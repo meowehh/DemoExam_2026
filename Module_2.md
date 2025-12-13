@@ -641,3 +641,132 @@ FLUSH PRIVILEGES;
 
 > [!IMPORTANT]
 > Готовый отчет можно взять - [тут.](./report_2026.odt)
+
+```bash
+apt-get update && apt-get install apache2 mariadb php8.2 apache2-mod_php8.2 php8.2-mysqli -y
+```
+```bash
+systemctl enable --now httpd2 mariadb
+systemctl restart httpd2 mariadb
+```
+```bash
+mkdir /mnt/add_cd
+mount /dev/sr0 /mnt/add_cd
+ls -la /mnt/add_cd
+```
+**Сверяем вывод:**
+```bash
+total 38
+dr-xr-xr-x 1 root root   256 Nov 23  2019 .
+drwxr-xr-x 3 root root  4096 Dec 13 12:54 ..
+dr-xr-xr-x 1 root root   332 Nov 23  2019 docker
+dr-xr-xr-x 1 root root   150 Nov 23  2019 playbook
+-r-xr-xr-x 1 root root 32527 Oct 13 04:22 Users.csv
+dr-xr-xr-x 1 root root   220 Nov 23  2019 web
+```
+```bash
+cp -r /mnt/add_cd/web /root/web
+ls -la /root/web
+```
+**Сверяем вывод:**
+```bash
+total 36
+dr-xr-xr-x 2 root root  4096 Dec 13 12:55 .
+drwx------ 9 root root  4096 Dec 13 12:55 ..
+-r-xr-xr-x 1 root root   415 Dec 13 12:55 dump.sql
+-r-xr-xr-x 1 root root  3964 Dec 13 12:55 index.php
+-r-xr-xr-x 1 root root 16780 Dec 13 12:55 logo.png
+```
+**Создаем базу данных webdb**
+```bash
+mysql -u root -e "CREATE DATABASE webdb;"
+```
+**Импортируем дамп**
+```bash
+mysql -u root webdb < /root/web/dump.sql
+```
+**Проверяем импорт**
+```bash
+mysql -u root -e "USE webdb; SHOW TABLES;"
+```
+**Сверяем вывод:**
+```bash
++-----------------+
+| Tables_in_webdb |
++-----------------+
+| employees       |
++-----------------+
+```
+**Создаем пользователя 'web' с паролем 'P@ssw0rd'**
+```bash
+mysql -u root -e "CREATE USER 'web'@'localhost' IDENTIFIED BY 'P@ssw0rd';"
+```
+**Даем права на базу webdb**
+```bash
+mysql -u root -e "GRANT ALL PRIVILEGES ON webdb.* TO 'web'@'localhost';"
+```
+**Применяем изменения**
+```bash
+mysql -u root -e "FLUSH PRIVILEGES;"
+```
+**Проверяем создание пользователя**
+```bash
+mysql -u root -e "SELECT user, host FROM mysql.user;"
+```
+**Сверяем вывод:**
+```bash
++-------------+---------------------+
+| User        | Host                |
++-------------+---------------------+
+| root        | 127.0.0.1           |
+| root        | ::1                 |
+| root        | hq-srv.au-team.irpo |
+| mariadb.sys | localhost           |
+| root        | localhost           |
+| web         | localhost           |
++-------------+---------------------+
+```
+```bash
+cp /root/web/index.php /var/www/html/
+mkdir -p /var/www/html/images
+cp /root/web/logo.png /var/www/html/images/
+```
+```bash
+chown -R apache2:webmaster /var/www/html/
+chmod 755 /var/www/html/
+chmod 755 /var/www/html/images/
+```
+```bash
+ls -la /var/www/html/index.php
+ls -la /var/www/html/images/logo.png
+```
+```bash
+vim /var/www/html/index.php
+```
+**Приводим к такому виду:**
+```bash
+$username = "web";
+$password = "P@ssw0rd";
+$dbname = "webdb";
+```
+```bash
+mv /var/www/html/index.html /var/www/html/index.html.default
+ls -la /var/www/html/
+```
+**Сверяем вывод:**
+```bash
+drwxr-sr-x 4 apache2 webmaster 4096 Dec 13 19:01 .
+drwxr-xr-x 9 root    webmaster 4096 Dec 13 12:20 ..
+drw-r-Sr-- 2 apache2 webmaster 4096 Oct 12  2010 addon-modules
+drwxr-sr-x 2 apache2 webmaster 4096 Dec 13 18:49 images
+-rw-r--r-- 1 apache2 webmaster   45 Jul 28 15:35 index.html.default
+-rw-r--r-- 1 apache2 webmaster 3968 Dec 13 18:58 index.php
+```
+```bash
+systemctl restart httpd2 mariadb
+```
+> [!NOTE]
+> Заходим на HQ-CLI, проверяем 192.168.1.10, должен открыться сайт, фио - DemoTest, отдел - DemoTest. Если эти поля уже заполены, значит все выполнено верно.
+
+> [!TIP]
+> Задание выполенено, веб-приложение работает на Apache + PHP + MariaDB, доступно по сети, выполняет CRUD-операции с базой данных сотрудников.
