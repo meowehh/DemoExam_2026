@@ -772,6 +772,11 @@ chmod 755 /var/www/html/
 ls -la /var/www/html/index.php
 ls -la /var/www/html/logo.png
 ```
+**Сверяем вывод**
+```bash
+-r-xr-xr-x 1 apache2 webmaster 3964 Dec 14 15:25 /var/www/html/index.php
+-r-xr-xr-x 1 apache2 webmaster 16780 Dec 14 15:25 /var/www/html/logo.png
+```
 ```bash
 vim /var/www/html/index.php
 ```
