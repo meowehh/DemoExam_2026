@@ -645,11 +645,11 @@ SHOW DATABASES;
 +--------------------+
 4 rows in set (0.001 sec)
 ```
-**Выполняем по очереди, в точности как у меня:**
+**Выполняем в точности как у меня:**
 ```bash
 CREATE DATABASE testdb;
-MariaDB [(none)]> CREATE USER 'testc'@'%' IDENTIFIED BY 'P@ssw0rd';
-MariaDB [(none)]> GRANT ALL PRIVILEGES ON testdb.* TO 'testc'@'%';
+CREATE USER 'testc'@'%' IDENTIFIED BY 'P@ssw0rd';
+GRANT ALL PRIVILEGES ON testdb.* TO 'testc'@'%';
 FLUSH PRIVILEGES;
 ```
 > [!Tip] 
