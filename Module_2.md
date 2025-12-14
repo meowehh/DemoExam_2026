@@ -972,3 +972,83 @@ vim /etc/hosts
 - В качестве логина для аутентификации выберите WEB с паролем P@ssw0rd.
 - Выберите файл /etc/nginx/.htpasswd в качестве хранилища учётных записей.
 - При успешной аутентификации клиент должен перейти на веб сайт.
+
+### ISP
+```bash
+apt-get update && apt-get install apache2-htpasswd -y
+```
+```bash
+htpasswd -c /etc/nginx/.htpasswd WEB
+P@ssw0rd
+```
+```bash
+nano /etc/nginx/sites-available.d/default.conf
+```
+**Добавляем 2 строки после proxy_pass в web.au-team.irpo, чтобы получилось такое содержимое файла:**
+```bash
+server {
+        listen 80;
+        server_name web.au-team.irpo;
+
+        location / {
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $remote_addr;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+                        proxy_pass http://172.16.1.10:8080;
+                        auth_basic "Restricted";
+                        auth_basic_user_file /etc/nginx/.htpasswd;
+        }
+}
+server {
+        listen 80;
+        server_name docker.au-team.irpo;
+
+        location / {
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $remote_addr;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+                        proxy_pass http://172.16.2.10:8080;
+        }
+}
+```
+```bash
+systemctl restart nginx
+systemctl status nginx
+```
+```bash
+● nginx.service - The nginx HTTP and reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; disabled; vendor preset: disabled)
+     Active: active (running) since Sun 2025-12-14 22:16:44 +07; 4min 31s ago
+    Process: 7780 ExecStartPre=/usr/sbin/nginx -t (code=exited, status=0/SUCCESS)
+   Main PID: 7782 (nginx)
+      Tasks: 11 (limit: 529)
+     Memory: 8.5M
+        CPU: 16ms
+     CGroup: /system.slice/nginx.service
+             ├─ 7782 "nginx: master process /usr/sbin/nginx -g daemon off;"
+             ├─ 7783 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+             ├─ 7784 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+             ├─ 7785 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+             ├─ 7786 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+             ├─ 7787 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+             ├─ 7788 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+             ├─ 7789 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+             ├─ 7790 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+             ├─ 7791 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+             └─ 7792 "nginx: worker process" "" "" "" "" "" "" "" "" ""
+
+Dec 14 22:16:44 isp.au-team.irpo systemd[1]: Starting The nginx HTTP and reverse proxy server...
+Dec 14 22:16:44 isp.au-team.irpo nginx[7780]: nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+Dec 14 22:16:44 isp.au-team.irpo nginx[7780]: nginx: configuration file /etc/nginx/nginx.conf test is successful
+Dec 14 22:16:44 isp.au-team.irpo systemd[1]: Started The nginx HTTP and reverse proxy server.
+```
+> [!NOTE]
+> Открываем Firefox/Яндекс браузер на HQ-CLI и пробуем зайти на http://web.au-team.irpo, если сайт просит авторизоваться, то значит задание выполнено верно.
+
+> [!Tip]
+> Демонстрационнный экзамен (ССА) 2026 года выполнен. 
+
+> [!IMPORTANT]
+> Осталось заполнить отчет, готовый отчет можно взять - [здесь](./report_2026.odt).
