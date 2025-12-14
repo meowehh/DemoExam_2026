@@ -828,7 +828,7 @@ apt-get update && apt-get install iptables -y
 ```
 **Проброс порта 8080 для testapp (Docker приложение на BR-SRV).**
 ```bash
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 192.168.3.10:8080
+iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 192.168.3.10:8080
 iptables -A FORWARD -p tcp -d 192.168.3.10 --dport 8080 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 ```
 **Проброс порта 2026 для SSH.**
@@ -869,7 +869,7 @@ apt-get update && apt-get install iptables -y
 ```
 **Проброс порта 80 для веб-приложения Apache (перенаправляем на порт 80 HQ-SRV).**
 ```bash
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 192.168.1.10:80
+iptables -t nat -A PREROUTING -p tcp --dport 8080 -j DNAT --to-destination 192.168.1.10:80
 iptables -A FORWARD -p tcp -d 192.168.1.10 --dport 80 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 ```
 **Проброс порта 2026 для SSH.**
