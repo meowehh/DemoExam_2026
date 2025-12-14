@@ -960,5 +960,5 @@ vim /etc/hosts
 172.16.1.1	web.au-team.irpo web
 172.16.2.1	docker.au-team.irpo docker
 ```
-- [!NOTE]
-- Открываем Firefox, пробуем зайти на http://web.au-team.irpo и http://docker.au-team.irpo, если оба сайта открылись и корректно отображаются, задание выполнено.
+> [!NOTE]
+> Открываем Firefox, пробуем зайти на http://web.au-team.irpo и http://docker.au-team.irpo, если оба сайта открылись и корректно отображаются, задание выполнено.
