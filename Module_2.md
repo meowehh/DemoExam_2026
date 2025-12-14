@@ -848,19 +848,19 @@ iptables -t nat -L -n -v
 ```
 **Сверяем вывод:**
 ```bash
-Chain PREROUTING (policy ACCEPT 62 packets, 4814 bytes)
+Chain PREROUTING (policy ACCEPT 1 packets, 76 bytes)
  pkts bytes target     prot opt in     out     source               destination         
-    0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:80 to:192.168.3.10:8080
+    0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:192.168.3.10:8080
     0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:2026 to:192.168.3.10:2026
 
 Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination         
 
-Chain OUTPUT (policy ACCEPT 1 packets, 76 bytes)
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination         
 
-Chain POSTROUTING (policy ACCEPT 63 packets, 4890 bytes)
- pkts bytes target     prot opt in     out     source               destination 
+Chain POSTROUTING (policy ACCEPT 1 packets, 76 bytes)
+ pkts bytes target     prot opt in     out     source               destination  
 ```
 
 ### HQ-RTR
@@ -889,18 +889,18 @@ iptables -t nat -L -n -v
 ```
 **Сверяем вывод:**
 ```bash
-Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+Chain PREROUTING (policy ACCEPT 2 packets, 116 bytes)
  pkts bytes target     prot opt in     out     source               destination         
-    0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:80 to:192.168.1.10:80
+    0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:192.168.1.10:80
     0     0 DNAT       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:2026 to:192.168.1.10:2026
 
 Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination         
 
-Chain OUTPUT (policy ACCEPT 6 packets, 472 bytes)
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination         
 
-Chain POSTROUTING (policy ACCEPT 6 packets, 472 bytes)
+Chain POSTROUTING (policy ACCEPT 2 packets, 116 bytes)
  pkts bytes target     prot opt in     out     source               destination  
 ```
 > [!NOTE]
