@@ -85,14 +85,14 @@ ping hq-rtr.au-team.irpo
 
 **От рута выполняем:**
 ```bash
-nmcli con modify CLI-NET \
+nmcli con modify DHCP-CLI \
 	ipv4.method auto \
 	ipv4.ignore-auto-dns yes \
 	ipv4.dns 192.168.3.10
 ```
 ```bash
-nmcli con down CLI-NET
-nmcli con up CLI-NET
+nmcli con down DHCP-CLI
+nmcli con up DHCP-CLI
 ```
 **Открываем снова GUI и запускаем терминал, там прописываем**:
 ```bash
