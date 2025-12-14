@@ -99,11 +99,17 @@ nmcli con up DHCP-CLI
 acc
 ```
 - Пароль toor
-- Выбрать Auth в Networking
-- Прописать в Domain - au-team.irpo
-- Прописать в Workgroup - au-team
-- Apply
-- Login: Administrator, Password: P@ssw0rd
+- Выбрать Аунтефикация в разделе пользователи. (Если интерфейс на английском языке, то Auth в Networking)
+- Обязательно выибраем - Домен Active Directory
+- Прописать в домен - au-team.irpo
+- Прописать в рабочую группу - au-team
+- Имя компьютера - hq-cli
+- Выбираем обязательно SSID, а не Winbind.
+- Сохранить
+- Логин: Administrator, Пароль: P@ssw0rd
+- Включить групповые политики!
+- Напротив kerberos галочку НЕ ставить.
+- Применяем изменения.
 > [!TIP]
 > Если вход в домен произошел, то - ОК!
 
