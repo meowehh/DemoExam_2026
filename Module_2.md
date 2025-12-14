@@ -272,7 +272,8 @@ apt-get update && apt-get install -y nfs-{server,utils}
 mkdir /raid/nfs
 chmod 766 /raid/nfs
 ```
-Комментируем первую строку в файле /etc/exports, в самом низу прописываем, то что идет ниже.
+> [!WARNING]
+> Комментируем первую строку в файле /etc/exports, в самом низу прописываем, то что идет ниже.
 ```
 mcedit /etc/exports
 /raid0/nfs 192.168.2.0/28(rw,no_subtree_check,no_root_squash)
