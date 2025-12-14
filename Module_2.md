@@ -918,6 +918,47 @@ Chain POSTROUTING (policy ACCEPT 6 packets, 472 bytes)
 apt-get update && apt-get install nginx nano -y
 ```
 ```bash
-cp /etc/nginx/sites-available.d/default.conf /etc/nginx/sites-available.d/web.conf
-nano /etc/nginx/sites-available.d/web.conf
+nano /etc/nginx/sites-available.d/default.conf
 ```
+**Приводим к такому:**
+```bash
+server {
+        listen 80;
+        server_name web.au-team.irpo;   
+
+        location / {
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $remote_addr;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+                        proxy_pass http://172.16.1.10:8080;
+        }
+}
+server {
+        listen 80;
+        server_name docker.au-team.irpo;
+
+        location / {
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $remote_addr;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+                        proxy_pass http://172.16.2.10:8080;
+        }
+}
+```
+```bash
+ln -s /etc/nginx/sites-available.d/default.conf /etc/nginx/sites-enabled.d/
+systemctl restart nginx
+systemctl status nginx
+```
+### HQ-CLI
+```bash
+vim /etc/hosts
+```
+```bash
+172.16.1.1	web.au-team.irpo web
+172.16.2.1	docker.au-team.irpo docker
+```
+- [!NOTE]
+- Открываем Firefox, пробуем зайти на http://web.au-team.irpo и http://docker.au-team.irpo, если оба сайта открылись и корректно отображаются, задание выполнено.
