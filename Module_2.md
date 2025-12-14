@@ -792,12 +792,14 @@ ls -la /var/www/html/
 ```
 **Сверяем вывод:**
 ```bash
-drwxr-sr-x 4 apache2 webmaster  4096 Dec 14 14:23 .
-drwxr-xr-x 9 root    webmaster  4096 Dec 13 12:20 ..
-drw-r-Sr-- 2 apache2 webmaster  4096 Oct 12  2010 addon-modules
+total 44
+drwxr-sr-x 3 apache2 webmaster  4096 Dec 14 15:29 .
+drwxr-xr-x 9 root    webmaster  4096 Dec 14 15:24 ..
+drwxrws--x 2 apache2 webmaster  4096 Oct 12  2010 addon-modules
 -rw-r--r-- 1 apache2 webmaster    45 Jul 28 15:35 index.html.default
--rw-r--r-- 1 apache2 webmaster  3968 Dec 13 18:58 index.php
--r-xr-xr-x 1 root    webmaster 16780 Dec 14 14:23 logo.png
+-r-xr-xr-x 1 apache2 webmaster  3968 Dec 14 15:28 index.php
+-r-xr-xr-x 1 apache2 webmaster  3964 Dec 14 15:25 index.php~
+-r-xr-xr-x 1 apache2 webmaster 16780 Dec 14 15:25 logo.png
 ```
 ```bash
 systemctl restart httpd2 mariadb
