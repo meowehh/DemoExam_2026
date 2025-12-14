@@ -922,7 +922,7 @@ nano /etc/nginx/sites-available.d/web.conf
 ```
 ```bash
 upstream web.au-team.irpo {
-        server 172.16.1.10:80;
+        server 172.16.1.1:80;
 }
 server {
         listen  8080;
@@ -963,7 +963,7 @@ nano /etc/nginx/sites-available.d/docker.conf
 ```
 ```bash
 upstream web.au-team.irpo {
-        server 172.16.2.10
+        server 172.16.2.1
 }
 server {
         listen  8080;
