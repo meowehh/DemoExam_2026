@@ -945,7 +945,7 @@ Neighbor ID     Pri State           Up Time         Dead Time Address         In
   
 ### HQ-RTR
 ```bash
-apt-get update && apt-get install dhcp-server nano -y #Рекомендуется настраивать через nano для корретной табуляци внутри dhcpd.conf.
+apt-get update && apt-get install dhcp-server nano -y #Рекомендуется настраивать через nano для корретной табуляции внутри dhcpd.conf.
 nano /etc/dhcp/dhcpd.conf.sample #Взять шаблон конфига настроек можно отсюда или готовый ниже.
 ```
 **Готовый конфиг**:
