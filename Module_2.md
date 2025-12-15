@@ -950,6 +950,7 @@ server {
 ```
 ```bash
 ln -s /etc/nginx/sites-available.d/default.conf /etc/nginx/sites-enabled.d/
+systemctl enable --now nginx
 systemctl restart nginx
 systemctl status nginx
 ```
