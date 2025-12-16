@@ -10,7 +10,7 @@
 > Вариант полностью построенный на базе Альт, без использования EcoRouter.
 
 > [!Important]
-> Скрипт развертки PVE для Proxmox взят у [PavelAF](https://github.com/PavelAF/PVE-ASDaC-BASH).
+> Скрипт развертки на PVE для Proxmox взят у [PavelAF](https://github.com/PavelAF/PVE-ASDaC-BASH).
 
 ### **Быстрый старт**:
 
