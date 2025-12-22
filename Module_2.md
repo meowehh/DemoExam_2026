@@ -186,18 +186,19 @@ P@ssw0rd
 admc
 ```
 **Настроим групповую политку:**
-- Group Policy Objects
+- Объекты групповой политики
 - au-team.irpo > правой кнопкой мыши
-- Create a GPO and link to ths GPU
+- Создать политику и связать с этим подразделением
 - Название: sudoers
-- Ставим галочку в поле enforced
-- Правой кнопкой мыши по sudoers > edit
-- Machine
-- Administative Templates
+- Ставим галочку в графу "принудительно" напротив sudoers
+- Правой кнопкой мыши по sudoers > изменить
+- Компьютер
+- Административные шаблоны
 - Samba
-- Unix Settings
-- Sudo rights
-- Enabled
+- Настройки Unix
+- Управление разрешениями Sudo
+- Состояние политики - Включено.
+- sudoers commands - Редактировать.
 - /usr/bin/id
 - /bin/cat
 - /bin/grep
