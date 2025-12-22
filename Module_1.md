@@ -527,7 +527,7 @@ sshuser ALL=(ALL) NOPASSWD: ALL
 Из под нового пользователя sshuser должен быть доступ без пароля:
 ```bash
 exit
-net_admin # P@ssw0rd
+sshuser # P@ssw0rd
 sudo cat /root/.bashrc
 ```
 
